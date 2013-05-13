@@ -14,10 +14,10 @@ Circular tree visualization inspired by Kai Wetzel's Pebbles.
 
 For usage, see example in test/bamm/bamm/example.clj.
 
-To run the example:
+### Generate Test Image
 
 ```sh
-  lein midje # renders and spits an example svg file
+  lein midje
   chromium-browser circular.svg
 ```
 
