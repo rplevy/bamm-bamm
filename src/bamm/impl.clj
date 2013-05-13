@@ -40,29 +40,29 @@
     (* exaggeration (- (count (:bamm.bamm/children right))
                        (count (:bamm.bamm/children left))))))
 
-(defn adjust-radius [r adjust]
-  (+ (/ r 2) adjust))
+(defn adjust-radius [radius adjust]
+  (+ (/ radius 2) adjust))
 
-(defn draw-tree* [tree legend {:keys [x y r] :as options}]
+(defn draw-tree* [tree legend {:keys [x y radius] :as options}]
   (let [[left-child right-child] (:bamm.bamm/children tree)
         right-adjust (weigh-children left-child right-child)
         left-adjust (* -1 right-adjust)]
     (apply group
            (keep identity
-                 [(circle (float x) (float y) (float r)
+                 [(circle (float x) (float y) (float radius)
                           :fill (get legend (:bamm.bamm/category tree)
                                      "#FFFFFF"))
                   (when left-child
                     (draw-tree* left-child legend
                                (assoc options
-                                 :x (+ (- x (/ r 2)) left-adjust)
-                                 :r (adjust-radius r left-adjust)
+                                 :x (+ (- x (/ radius 2)) left-adjust)
+                                 :radius (adjust-radius radius left-adjust)
                                  :emit? false)))
                   (when right-child
                     (draw-tree* right-child legend
                                (assoc options
-                                 :x (- (+ x (/ r 2)) right-adjust)
-                                 :r (adjust-radius r right-adjust)
+                                 :x (- (+ x (/ radius 2)) right-adjust)
+                                 :radius (adjust-radius radius right-adjust)
                                  :emit? false)))]))))
 
 (defn draw-tree [tree legend {:keys [mag x x-offset y-offset] :as options}]
@@ -82,13 +82,13 @@
 
 (defn tree-layout-offsets [num-trees options]
   (let [padded-diameter (* (+ 2 (get options :padding 0.25))
-                           (:r options))]
+                           (:radius options))]
     (take num-trees
           (for [y-offset (range (:y-offset options)
-                                (:svg-h options)
+                                (- (:svg-h options) (* 2 (:radius options)))
                                 padded-diameter)
                 x-offset (range (:x-offset options)
-                                (:svg-w options)
+                                (- (:svg-w options) (* 2 (:radius options)))
                                 padded-diameter)]
             (merge options {:x-offset x-offset
                             :y-offset y-offset})))))

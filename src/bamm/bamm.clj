@@ -9,7 +9,7 @@
    :y-offset     0     ; ""
    :x            25    ; x coord relative to location of group
    :y            25    ; y coord ""
-   :r            25    ; radius
+   :radius       25    ; radius
    :padding      0.25  ; space between circular trees
    #_:tree-offsets #_nil})
 
