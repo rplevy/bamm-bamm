@@ -7,7 +7,8 @@
   {:mag 5
    :emit? true
    :svg-h 50
-   :svg-w 50
+   :svg-w 75
+   :offset 5
    :x 25
    :y 25
    :r 25})
@@ -23,15 +24,18 @@
     []
     legend)))
 
-(defn ^:private maybe-emit [legend {:keys [mag emit? svg-h svg-w]} svg-content]
+(defn ^:private maybe-emit [legend
+                            {:keys [mag emit? svg-h svg-w offset]}
+                            svg-content]
   (if-not emit?
     (apply group svg-content)
     (emit
      (svg {:height (* mag (float svg-h))
            :width (* mag (float svg-w))}
-          (group
-           (apply group (render-legend legend))
-           (apply group svg-content))))))
+       (group
+        (apply group (render-legend legend))
+        (concat [:g {:transform (format "translate(%s)" (* mag offset))}]
+                svg-content))))))
 
 (defn tree [category & children]
   {:category category
@@ -55,9 +59,13 @@
                        :fill (get legend category "#FFFFFF"))
                (when left-daughter
                  (draw left-daughter legend
-                       (assoc options :x (- x (/ r 2)) :r (/ r 2)
-                              :emit? false)))
+                       (assoc options
+                         :x (- x (/ r 2))
+                         :r (/ r 2)
+                         :emit? false)))
                (when right-daughter
                  (draw right-daughter legend
-                       (assoc options :x (+ x (/ r 2)) :r (/ r 2)
-                              :emit? false)))])))))
+                       (assoc options
+                         :x (+ x (/ r 2))
+                         :r (/ r 2)
+                         :emit? false)))])))))
