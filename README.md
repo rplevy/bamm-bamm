@@ -6,7 +6,7 @@ Circular tree visualization inspired by [Kai Wetzel's Pebbles](http://lip.source
 
 ## Coordinates & Require
 
-```
+```clojure
   [bamm-bamm "0.1.0"]
 ```
 
