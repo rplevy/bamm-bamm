@@ -5,7 +5,6 @@
 (def defaults
   {:mag 5
    :emit? true
-   :legend? true
    :svg-h 50
    :svg-w 75
    :x-offset 5
@@ -19,7 +18,8 @@
    ::children children})
 
 (defn gen-legend
-  "automatic color legend from tree's categories"
+  "automatic color legend from tree's categories
+   accepts tree (a map), or a list of all the keys"
   [tree-or-keys]
   (let [distinct-cats (if (map? tree-or-keys)
                         (tree->keys tree-or-keys)
