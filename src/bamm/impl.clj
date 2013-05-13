@@ -35,17 +35,17 @@
     []
     legend)))
 
-(defn weigh-children [left right]
-  (let [exaggeration 2]
-    (* exaggeration (- (count (:bamm.bamm/children right))
-                       (count (:bamm.bamm/children left))))))
+(defn weigh-children [exaggeration left right]
+  (* exaggeration (- (count (:bamm.bamm/children right))
+                     (count (:bamm.bamm/children left)))))
 
 (defn adjust-radius [radius adjust]
   (+ (/ radius 2) adjust))
 
 (defn draw-tree* [tree legend {:keys [x y radius] :as options}]
   (let [[left-child right-child] (:bamm.bamm/children tree)
-        right-adjust (weigh-children left-child right-child)
+        right-adjust (weigh-children (:exaggeration options)
+                                     left-child right-child)
         left-adjust (* -1 right-adjust)]
     (apply group
            (keep identity
