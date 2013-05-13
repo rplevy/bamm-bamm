@@ -13,17 +13,23 @@
    :r 25})
 
 (defn tree [category & children]
-  {:category category
-   :children children})
+  {::category category
+   ::children children})
+
+(defn gen-legend
+  "automatic color legend from tree's categories"
+  [tree]
+  (let [distinct-cats (tree->keys tree)]
+    (zipmap distinct-cats (gen-swatch "#93C572" (count distinct-cats)))))
 
 (defn draw
   ([tree]
-     "TODO: automatic color legend")
+     (draw tree (gen-legend tree)))
   ([tree legend]
      (draw tree legend defaults))
-  ([{:keys [category children]} legend options]
+  ([tree legend options]
      (let [{:keys [x y r] :as options} (merge defaults options)
-           [left-child right-child] children]
+           [left-child right-child] (::children tree)]
        (maybe-emit
         legend
         options
@@ -31,7 +37,7 @@
               left-adjust (* -1 right-adjust)]
           (keep identity
                 [(circle (float x) (float y) (float r)
-                         :fill (get legend category "#FFFFFF"))
+                         :fill (get legend (::category tree) "#FFFFFF"))
                  (when left-child
                    (draw left-child legend
                          (assoc options
