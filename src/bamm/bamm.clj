@@ -4,13 +4,13 @@
              [xml :refer [emit]]]))
 
 (def defaults
-  {:mag 10
+  {:mag 5
    :emit? true
-   :svg-h 100
-   :svg-w 100
-   :x 50
-   :y 50
-   :r 50})
+   :svg-h 50
+   :svg-w 50
+   :x 25
+   :y 25
+   :r 25})
 
 (defn ^:private render-legend [legend]
   (cons
@@ -27,8 +27,8 @@
   (if-not emit?
     (apply group svg-content)
     (emit
-     (svg {:height (* mag svg-h)
-           :width (* mag svg-w)}
+     (svg {:height (* mag (float svg-h))
+           :width (* mag (float svg-w))}
           (group
            (apply group (render-legend legend))
            (apply group svg-content))))))
@@ -49,7 +49,9 @@
         legend
         options
         (keep identity
-              [(circle (* mag x) (* mag y) (* mag r)
+              [(circle (* mag (float x))
+                       (* mag (float y))
+                       (* mag (float r))
                        :fill (get legend category "#FFFFFF"))
                (when left-daughter
                  (draw left-daughter legend
