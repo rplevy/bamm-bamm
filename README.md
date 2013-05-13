@@ -4,7 +4,11 @@
 
 Circular tree visualization inspired by [Kai Wetzel's Pebbles](http://lip.sourceforge.net/ctreemap.html).
 
-## Coordinates
+## Coordinates & Require
+
+```
+  [bamm-bamm "0.1.0"]
+```
 
 ```clojure
   [bamm.bamm :refer [tree draw]]
