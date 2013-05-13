@@ -1,6 +1,14 @@
 # bamm-bamm
 
+<img src="https://raw.github.com/rplevy/bamm-bamm/master/circular.png">
+
 Circular tree visualization inspired by Kai Wetzel's Pebbles.
+
+## Coordinates
+
+```clojure
+  [bamm.bamm :refer [tree draw]]
+```
 
 ## Usage
 
