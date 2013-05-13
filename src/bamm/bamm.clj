@@ -61,20 +61,20 @@
        (maybe-emit
         legend
         options
-        (keep identity
-              [(circle (float x) (float y) (float r)
-                       :fill (get legend category "#FFFFFF"))
-               (when left-child
-                 (draw left-child legend
-                       (let [adjust (weigh-children right-child left-child)]
+        (let [right-adjust (weigh-children left-child right-child)
+              left-adjust (* -1 right-adjust)]
+          (keep identity
+                [(circle (float x) (float y) (float r)
+                         :fill (get legend category "#FFFFFF"))
+                 (when left-child
+                   (draw left-child legend
                          (assoc options
-                           :x (+ (- x (/ r 2)) adjust)
-                           :r (adjust-radius r adjust)
-                           :emit? false))))
-               (when right-child
-                 (draw right-child legend
-                       (let [adjust (weigh-children left-child right-child)]
+                           :x (+ (- x (/ r 2)) left-adjust)
+                           :r (adjust-radius r left-adjust)
+                           :emit? false)))
+                 (when right-child
+                   (draw right-child legend
                          (assoc options
-                           :x (- (+ x (/ r 2)) adjust)
-                           :r (adjust-radius r adjust)
-                           :emit? false))))])))))
+                           :x (- (+ x (/ r 2)) right-adjust)
+                           :r (adjust-radius r right-adjust)
+                           :emit? false)))]))))))
