@@ -5,9 +5,11 @@
 (def defaults
   {:mag 5
    :emit? true
+   :legend? true
    :svg-h 50
    :svg-w 75
-   :offset 5
+   :x-offset 5
+   :y-offset 0
    :x 25
    :y 25
    :r 25})
@@ -18,8 +20,10 @@
 
 (defn gen-legend
   "automatic color legend from tree's categories"
-  [tree]
-  (let [distinct-cats (tree->keys tree)]
+  [tree-or-keys]
+  (let [distinct-cats (if (map? tree-or-keys)
+                        (tree->keys tree-or-keys)
+                        (distinct tree-or-keys))]
     (zipmap distinct-cats (gen-swatch "#93C572" (count distinct-cats)))))
 
 (defn draw

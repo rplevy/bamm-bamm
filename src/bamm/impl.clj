@@ -36,7 +36,7 @@
     legend)))
 
 (defn maybe-emit [legend
-                  {:keys [mag emit? svg-h svg-w offset]}
+                  {:keys [mag emit? svg-h svg-w x-offset y-offset]}
                   svg-content]
   (if-not emit?
     (apply group svg-content)
@@ -45,8 +45,10 @@
            :width (* mag (float svg-w))}
        (group
         (apply group (render-legend legend))
-        [:g {:transform (format "translate(%s)" (* mag offset))}
-         (concat [:g {:transform (format "scale(%s)" offset)}]
+        [:g {:transform (format "translate(%s,%s)"
+                                (* mag x-offset)
+                                (* mag y-offset))}
+         (concat [:g {:transform (format "scale(%s)" x-offset)}]
                  svg-content)])))))
 
 (defn weigh-children [left right]
