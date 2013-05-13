@@ -11,7 +11,7 @@
    :y            25.0    ; y coord ""
    :radius       25.0    ; radius
    :padding      0.25    ; space between circular trees
-   :exaggeration 1     ; make more space for areas with more children
+   :exaggeration 250    ; make more space for areas with more children
    #_:tree-offsets #_nil})
 
 (defn tree [category & children]

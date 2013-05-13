@@ -35,10 +35,12 @@
     []
     legend)))
 
-(defn weigh-children [exaggeration radius left right]
-  (- (count (:bamm.bamm/children right))
-     (count (:bamm.bamm/children left))
-     (/ exaggeration radius)))
+(defn weigh-children [exaggeration radius right left]
+  (/ (* exaggeration
+        #_radius
+        (- (count (:bamm.bamm/children right))
+           (count (:bamm.bamm/children left))))
+     -100))
 
 (defn adjust-radius [radius adjust]
   (+ (/ radius 2) adjust))
