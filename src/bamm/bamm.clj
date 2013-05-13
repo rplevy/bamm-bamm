@@ -1,17 +1,17 @@
 (ns bamm.bamm
-  (:require [bamm.impl :refer :all]
-            [analemma.svg :refer [circle]]))
+  (:require [bamm.impl :refer :all]))
 
 (def defaults
-  {:mag 5
-   :emit? true
-   :svg-h 50
-   :svg-w 75
-   :x-offset 5
-   :y-offset 0
-   :x 25
-   :y 25
-   :r 25})
+  {:mag          5     ; magnification factor
+   :svg-h        300   ; svg document height
+   :svg-w        300   ;           "" width
+   :x-offset     5     ; for one tree, or starting point for generated
+   :y-offset     0     ; ""
+   :x            25    ; x coord relative to location of group
+   :y            25    ; y coord ""
+   :r            25    ; radius
+   :padding      0.25  ; space between circular trees
+   #_:tree-offsets #_nil})
 
 (defn tree [category & children]
   {::category category
@@ -20,37 +20,23 @@
 (defn gen-legend
   "automatic color legend from tree's categories
    accepts tree (a map), or a list of all the keys"
-  [tree-or-keys]
+  [tree-or-keys & [options]]
   (let [distinct-cats (if (map? tree-or-keys)
                         (tree->keys tree-or-keys)
                         (distinct tree-or-keys))]
-    (zipmap distinct-cats (gen-swatch "#93C572" (count distinct-cats)))))
+    (zipmap distinct-cats (gen-swatch (get options :mix-color "#93C572")
+                                      (count distinct-cats)))))
 
 (defn draw
-  ([tree]
-     (draw tree (gen-legend tree)))
-  ([tree legend]
-     (draw tree legend defaults))
-  ([tree legend options]
-     (let [{:keys [x y r] :as options} (merge defaults options)
-           [left-child right-child] (::children tree)]
-       (maybe-emit
-        legend
-        options
-        (let [right-adjust (weigh-children left-child right-child)
-              left-adjust (* -1 right-adjust)]
-          (keep identity
-                [(circle (float x) (float y) (float r)
-                         :fill (get legend (::category tree) "#FFFFFF"))
-                 (when left-child
-                   (draw left-child legend
-                         (assoc options
-                           :x (+ (- x (/ r 2)) left-adjust)
-                           :r (adjust-radius r left-adjust)
-                           :emit? false)))
-                 (when right-child
-                   (draw right-child legend
-                         (assoc options
-                           :x (- (+ x (/ r 2)) right-adjust)
-                           :r (adjust-radius r right-adjust)
-                           :emit? false)))]))))))
+  ([trees]
+     (draw trees (gen-legend (first tree))))
+  ([trees legend]
+     (draw trees legend defaults))
+  ([trees legend options]
+     (let [options (merge defaults options)]
+       (emit-trees (map #(draw-tree %1 legend %2)
+                        trees
+                        (get options :tree-offsets
+                             (tree-layout-offsets (count trees) options)))
+                   legend
+                   options))))

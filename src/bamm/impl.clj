@@ -1,5 +1,5 @@
 (ns bamm.impl
-  (:require [analemma.svg :refer [svg group]]
+  (:require [analemma.svg :refer [svg group circle]]
             [analemma.xml :refer [emit]]))
 
 (defn hex->rgb [rgb-str]
@@ -35,25 +35,6 @@
     []
     legend)))
 
-(defn emit-with-legend [legend
-                        {:keys [mag emit? svg-h svg-w x-offset y-offset]}
-                        svg-content]
-  (emit
-   (svg {:height (* mag (float svg-h))
-         :width (* mag (float svg-w))}
-        (group
-         (apply group (render-legend legend))
-         [:g {:transform (format "translate(%s,%s)"
-                                 (* mag x-offset)
-                                 (* mag y-offset))}
-          (concat [:g {:transform (format "scale(%s)" x-offset)}]
-                  svg-content)]))))
-
-(defn maybe-emit [legend {:keys [emit?] :as options} svg-content]
-  (if-not emit?
-    (apply group svg-content)
-    (emit-with-legend legend options svg-content)))
-
 (defn weigh-children [left right]
   (let [exaggeration 2]
     (* exaggeration (- (count (:bamm.bamm/children right))
@@ -61,3 +42,53 @@
 
 (defn adjust-radius [r adjust]
   (+ (/ r 2) adjust))
+
+(defn draw-tree* [tree legend {:keys [x y r] :as options}]
+  (let [[left-child right-child] (:bamm.bamm/children tree)
+        right-adjust (weigh-children left-child right-child)
+        left-adjust (* -1 right-adjust)]
+    (apply group
+           (keep identity
+                 [(circle (float x) (float y) (float r)
+                          :fill (get legend (:bamm.bamm/category tree)
+                                     "#FFFFFF"))
+                  (when left-child
+                    (draw-tree* left-child legend
+                               (assoc options
+                                 :x (+ (- x (/ r 2)) left-adjust)
+                                 :r (adjust-radius r left-adjust)
+                                 :emit? false)))
+                  (when right-child
+                    (draw-tree* right-child legend
+                               (assoc options
+                                 :x (- (+ x (/ r 2)) right-adjust)
+                                 :r (adjust-radius r right-adjust)
+                                 :emit? false)))]))))
+
+(defn draw-tree [tree legend {:keys [mag x x-offset y-offset] :as options}]
+  [:g {:transform (format "translate(%s,%s)"
+                          (* mag x-offset)
+                          (* mag y-offset))}
+   [:g {:transform (format "scale(%s)" mag)}
+    (draw-tree* tree legend options)]])
+
+(defn emit-trees [svg-trees
+                  legend
+                  {:keys [mag emit? svg-h svg-w x-offset y-offset]}]
+  (emit (svg {:height (* mag (float svg-h))
+              :width (* mag (float svg-w))}
+             [:g (cons :g (render-legend legend))
+              (apply group svg-trees)])))
+
+(defn tree-layout-offsets [num-trees options]
+  (let [padded-diameter (* (+ 2 (get options :padding 0.25))
+                           (:r options))]
+    (take num-trees
+          (for [y-offset (range (:y-offset options)
+                                (:svg-h options)
+                                padded-diameter)
+                x-offset (range (:x-offset options)
+                                (:svg-w options)
+                                padded-diameter)]
+            (merge options {:x-offset x-offset
+                            :y-offset y-offset})))))
