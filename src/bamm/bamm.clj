@@ -2,16 +2,16 @@
   (:require [bamm.impl :refer :all]))
 
 (def defaults
-  {:mag          5     ; magnification factor
-   :svg-h        300   ; svg document height
-   :svg-w        300   ;           "" width
-   :x-offset     5     ; for one tree, or starting point for generated
-   :y-offset     0     ; ""
-   :x            25    ; x coord relative to location of group
-   :y            25    ; y coord ""
-   :radius       25    ; radius
-   :padding      0.25  ; space between circular trees
-   :exaggeration 2.5   ; make more space for areas with more children
+  {:mag          3.0     ; magnification factor
+   :svg-h        300.0   ; svg document height
+   :svg-w        350.0   ;           "" width
+   :x-offset     15.0     ; for one tree, or starting point for generated
+   :y-offset     0.0     ; ""
+   :x            25.0    ; x coord relative to location of group
+   :y            25.0    ; y coord ""
+   :radius       25.0    ; radius
+   :padding      0.25    ; space between circular trees
+   :exaggeration 1     ; make more space for areas with more children
    #_:tree-offsets #_nil})
 
 (defn tree [category & children]

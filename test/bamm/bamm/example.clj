@@ -50,7 +50,14 @@
                      (tree :foo)
                      (tree :qux
                            (tree :foo
-                                 (tree :qux))))
+                                 (tree :baz
+                                       (tree :foo
+                                             (tree :bar
+                                                   (tree :foo)
+                                                   (tree :qux))
+                                             (tree :baz
+                                                   (tree :foo)
+                                                   (tree :qux)))))))
                (tree :bar
                      (tree :foo)
                      (tree :qux)))
