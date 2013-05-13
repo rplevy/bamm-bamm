@@ -8,9 +8,9 @@
  (println "drawing tree and saving as circular.svg")
  (spit "circular.svg"
        (draw (tree :foo
-                   (tree :bar
+                   (tree :bar)
+                   (tree :baz
                          (tree :foo)
-                         (tree :qux))
-                   (tree :baz))
+                         (tree :qux)))
              {:foo "#000000", :bar "#FF0000", :baz "#00FF00", :qux "#0000FF"}))
  (size "circular.svg") => #(> % 10))

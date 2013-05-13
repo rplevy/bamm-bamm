@@ -42,6 +42,14 @@
   {:category category
    :children children})
 
+(defn ^:private weigh-children [left right]
+  (let [exaggeration 1.5]
+    (* exaggeration (- (count (:children right))
+                       (count (:children left))))))
+
+(defn ^:private adjust-radius [r adjust]
+  (+ (/ r 2) adjust))
+
 (defn draw
   ([tree]
      "TODO: automatic color legend")
@@ -49,22 +57,24 @@
      (draw tree legend defaults))
   ([{:keys [category children]} legend options]
      (let [{:keys [x y r] :as options} (merge defaults options)
-           [left-daughter right-daughter] children]
+           [left-child right-child] children]
        (maybe-emit
         legend
         options
         (keep identity
               [(circle (float x) (float y) (float r)
                        :fill (get legend category "#FFFFFF"))
-               (when left-daughter
-                 (draw left-daughter legend
-                       (assoc options
-                         :x (- x (/ r 2))
-                         :r (/ r 2)
-                         :emit? false)))
-               (when right-daughter
-                 (draw right-daughter legend
-                       (assoc options
-                         :x (+ x (/ r 2))
-                         :r (/ r 2)
-                         :emit? false)))])))))
+               (when left-child
+                 (draw left-child legend
+                       (let [adjust (weigh-children right-child left-child)]
+                         (assoc options
+                           :x (+ (- x (/ r 2)) adjust)
+                           :r (adjust-radius r adjust)
+                           :emit? false))))
+               (when right-child
+                 (draw right-child legend
+                       (let [adjust (weigh-children left-child right-child)]
+                         (assoc options
+                           :x (- (+ x (/ r 2)) adjust)
+                           :r (adjust-radius r adjust)
+                           :emit? false))))])))))
