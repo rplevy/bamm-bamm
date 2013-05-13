@@ -2,7 +2,7 @@
 
 <img src="https://raw.github.com/rplevy/bamm-bamm/master/circular.png">
 
-Circular tree visualization inspired by Kai Wetzel's Pebbles.
+Circular tree visualization inspired by [Kai Wetzel's Pebbles](http://lip.sourceforge.net/ctreemap.html).
 
 ## Coordinates
 
@@ -12,7 +12,7 @@ Circular tree visualization inspired by Kai Wetzel's Pebbles.
 
 ## Usage
 
-For usage, see example in test/bamm/bamm/example.clj.
+For usage, see example in [test/bamm/bamm/example.clj](https://github.com/rplevy/bamm-bamm/blob/master/test/bamm/bamm/example.clj).
 
 ### Generate Test Image
 
@@ -29,6 +29,6 @@ to implement that at the moment.
 
 ## License
 
-Copyright © 2013 FIXME
+Copyright © 2013 Robert P. Levy (@rplevy)
 
 Distributed under the Eclipse Public License, the same as Clojure.
