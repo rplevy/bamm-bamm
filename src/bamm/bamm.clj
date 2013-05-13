@@ -34,8 +34,9 @@
            :width (* mag (float svg-w))}
        (group
         (apply group (render-legend legend))
-        (concat [:g {:transform (format "translate(%s)" (* mag offset))}]
-                svg-content))))))
+        [:g {:transform (format "translate(%s)" (* mag offset))}
+         (concat [:g {:transform (format "scale(%s)" offset)}]
+                 svg-content)])))))
 
 (defn tree [category & children]
   {:category category
@@ -47,15 +48,13 @@
   ([tree legend]
      (draw tree legend defaults))
   ([{:keys [category children]} legend options]
-     (let [{:keys [mag x y r] :as options} (merge defaults options)
+     (let [{:keys [x y r] :as options} (merge defaults options)
            [left-daughter right-daughter] children]
        (maybe-emit
         legend
         options
         (keep identity
-              [(circle (* mag (float x))
-                       (* mag (float y))
-                       (* mag (float r))
+              [(circle (float x) (float y) (float r)
                        :fill (get legend category "#FFFFFF"))
                (when left-daughter
                  (draw left-daughter legend
